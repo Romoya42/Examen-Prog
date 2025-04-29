@@ -650,9 +650,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: c44f9aea31bda9e4386ec69ef0981d6a, type: 3}
   - {fileID: 2800000, guid: 9c9bae6d66d07f0408f05ab4ab4ae8a0, type: 3}
   - {fileID: 2800000, guid: 243315846e0e3bf4d981184968a6f9a3, type: 3}
-  scaleY: 7
+  scaleY: 3
   deplacement: 4
-  scaleX: 4
+  scaleX: 3
   pairImages: []
   point: 0
 --- !u!4 &921782712
@@ -773,7 +773,7 @@ Transform:
   m_GameObject: {fileID: 2005593788}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.43, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 1
   m_Children: []

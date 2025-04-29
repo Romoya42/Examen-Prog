@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     void CreatePair()
     {
-        for (int taille =0; taille < scaleX* scaleX; taille++)
+        for (int taille =0; taille < (scaleY* scaleX)/2; taille++)
         {
 
             Texture2D randomTexture = images[Random.Range(0, images.Count)];
