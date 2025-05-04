@@ -1,74 +1,74 @@
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
-    public Transform card1;
-    public Transform card2;
+    [SerializeField] private Turn card1;
+    [SerializeField] private Turn card2;
+    public Transform hited;
+
+    private bool isBusy = false;
+
     void Update()
     {
-        
-    // Si clic gauche de la souris
+        if (isBusy) return;
+
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Crée un rayon depuis la caméra
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit) && hit.collider.CompareTag("Card"))
-            {
+            {   
+                hited = hit.collider.transform.parent;
+                Turn hitCard = hited.GetComponent<Turn>();
 
-                if (hit.collider.transform.childCount > 0)
-                {
-                    if (card1 == null) {
-                        card1 = hit.collider.transform.GetChild(0);
-                    }
-                    else if (card1 != hit.collider.transform)
-                    {
-                        card2 = hit.collider.transform.GetChild(0);
-                    }
-                }
-
-                else
+                if (hitCard != null && !hitCard.rotated && !hitCard.isRotating)
                 {
                     if (card1 == null)
-                    {
-                        card1 = hit.collider.transform;
+                    {                        
+                        card1 = hitCard;
+                        card1.Rotate180Smooth();
                     }
-                    else if (card1 != hit.collider.transform)
-                    {
-                        card2 = hit.collider.transform;
-                    }
-                }
-                
-                if (card1  != null && card2 != null)
-                {
-                    if (card1.GetComponent<Renderer>().material.mainTexture == card2.GetComponent<Renderer>().material.mainTexture )
-                    {
-                        GameManager.Instance.point++;
-                        print("point");
-                    }
-                    card1 = null;
-                    card2 = null;
-                }
-
-            }
-            
-            
-            /*
-                else {
-
-                    if (hit.collider.CompareTag("Card"))
-                {
-                    if (hit.collider.transform.childCount > 0)
-                    {
-
-                        if (hit.collider.GetComponent<Renderer>().material.mainTexture == )
-
-                    }
+                    else if (card2 == null && card1 != hitCard)
+                    {                    
+                        card2 = hitCard;
+                        card2.Rotate180Smooth();
+                        StartCoroutine(CheckMatchAfterRotation());
                     }
                 }
-            */
-            
+            }   
         }
+    }
+
+    IEnumerator CheckMatchAfterRotation()
+    {
+        isBusy = true;
+
+        while (card1.isRotating || card2.isRotating)
+        {
+            yield return null;
+        }
+
+        Texture tex1 = card1.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
+        Texture tex2 = card2.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
+
+        if (tex1 != null && tex2 != null && tex1.name == tex2.name)
+        {
+            card1.rotated = true;
+            card2.rotated = true;
+            GameManager.Instance.point++;
+            print("point");
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.1f);
+            card1.Rotate180Smooth();
+            card2.Rotate180Smooth();
+        }
+
+        card1 = null;
+        card2 = null;
+        isBusy = false;
     }
 }

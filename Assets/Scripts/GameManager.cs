@@ -14,11 +14,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject card;
     [SerializeField] private Material baseMaterial;
     private Material instanceMaterial;
-    [SerializeField] public List<Texture2D> images;
+    [SerializeField] private List<Texture2D> images;
 
     [SerializeField] private int scaleY = 0;
     [SerializeField] private float deplacement = 1.5f;
     [SerializeField] private int scaleX = 0;
+
     private int cardnumber=0;
     public List<Texture2D> pairImages;
     public int point;
@@ -80,7 +81,7 @@ public class GameManager : MonoBehaviour
     void GenerateCard(float i, float j)
     {
                 
-        var newcard = Instantiate(card, new Vector3( i * deplacement, 0, j * deplacement), Quaternion.Euler(0, 0, 90), transform);
+        var newcard = Instantiate(card, new Vector3( i * deplacement, 0, j * deplacement), Quaternion.Euler(0, 180, 90-180), transform);
 
         instanceMaterial = new Material(baseMaterial);
         
