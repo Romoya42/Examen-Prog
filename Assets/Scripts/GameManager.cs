@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         
 
         errorCount = 0;
-        errorText.text = "Erreurs : " + errorCount;
+        errorText.text = "Erreurs : " + errorCount + "/" + maxErreur+1;
 
         CreatePair();
         Shuffle();
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
 
     public void PointManager(int point){
         errorCount+= point;
-        errorText.text = "Erreurs : " + errorCount;
+        errorText.text = "Erreurs : " + errorCount + "/" + maxErreur+1;
 
         if (errorCount > maxErreur)
         {
