@@ -6,6 +6,8 @@ using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using System.Linq;
 using System.Drawing;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,20 +21,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int scaleY = 0;
     [SerializeField] private float deplacement = 1.5f;
     [SerializeField] private int scaleX = 0;
-
+    private int errorCount=0;
+    [SerializeField] private TMP_Text errorText;
     private int cardnumber=0;
+
     public List<Texture2D> pairImages;
-    public int point;
+
+    private List<GameObject> spawnedObjects = new List<GameObject>();
+
+    public int maxErreur;
+    
 
 
-
-    void Awake()
-    {
-        point = 0;
-        card.transform.GetChild(0).GetComponent<Renderer>();
-
-
-
+    void Awake(){
         if (Instance is null)
         {
             Instance = this;
@@ -43,13 +44,38 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
     
+    
 
-
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            
+            DestroyAllSpawnedObjects();
+            Restartscene();
+        }
+    }
+ 
     void Start(){
+        Restartscene();
+     }
+
+    void Restartscene(){
+        spawnedObjects.Clear();
+        pairImages.Clear();
+        cardnumber=0;
+        
+
+        errorCount = 0;
+        errorText.text = "Erreurs : " + errorCount;
+
         CreatePair();
         Shuffle();
+        
+        
         for (int i = 0; i < scaleY; i++)
         {
             for (int j = 0; j < scaleX; j++)
@@ -59,8 +85,33 @@ public class GameManager : MonoBehaviour
                 cardnumber++;
             }
         }
-     }
+    }
 
+    public void DestroyAllSpawnedObjects()
+    {
+        foreach (GameObject obj in spawnedObjects)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        spawnedObjects.Clear();
+    }
+
+
+
+    public void PointManager(int point){
+        errorCount+= point;
+        errorText.text = "Erreurs : " + errorCount;
+
+        if (errorCount > maxErreur)
+        {
+            
+            DestroyAllSpawnedObjects();
+            Restartscene();
+        }
+
+    }
 
     void CreatePair()
     {
@@ -82,6 +133,7 @@ public class GameManager : MonoBehaviour
     {
                 
         var newcard = Instantiate(card, new Vector3( i * deplacement, 0, j * deplacement), Quaternion.Euler(0, 180, 90-180), transform);
+        spawnedObjects.Add(newcard);
 
         instanceMaterial = new Material(baseMaterial);
         

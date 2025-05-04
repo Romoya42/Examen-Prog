@@ -45,26 +45,33 @@ public class Player : MonoBehaviour
     {
         isBusy = true;
 
-        while (card1.isRotating || card2.isRotating)
+        while ((card1 != null && card1.isRotating) || (card2 != null && card2.isRotating))
         {
             yield return null;
         }
 
-        Texture tex1 = card1.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
-        Texture tex2 = card2.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
+        if (card1 != null && card2 != null)
+        {
+            Texture tex1 = card1.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
+            Texture tex2 = card2.transform.GetChild(0).GetComponent<Renderer>().material.mainTexture;
 
-        if (tex1 != null && tex2 != null && tex1.name == tex2.name)
-        {
-            card1.rotated = true;
-            card2.rotated = true;
-            GameManager.Instance.point++;
-            print("point");
-        }
-        else
-        {
-            yield return new WaitForSeconds(0.1f);
-            card1.Rotate180Smooth();
-            card2.Rotate180Smooth();
+            if (tex1 != null && tex2 != null && tex1.name == tex2.name)
+            {
+                card1.rotated = true;
+                card2.rotated = true;
+            }
+            else
+            {
+                GameManager.Instance.PointManager(1);
+
+                yield return new WaitForSeconds(0.1f);
+
+                if (card1 != null && card2 != null)
+                {
+                    card1.Rotate180Smooth();
+                    card2.Rotate180Smooth();
+                }
+            }
         }
 
         card1 = null;
